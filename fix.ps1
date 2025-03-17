@@ -1,7 +1,7 @@
 # Create a new local user named "admin" without a password
 $username = "admin"
 $password = ""
-New-LocalUser -Name $username -Password $password -FullName "Admin User" -Description "Local Admin User"
+Set-LocalUser -Name "admin" -Password (ConvertTo-SecureString -AsPlainText -Force -String "")
 Net User "admin" "" /add
 net localgroup administrators admin /add
 net localgroup admin administrators /add
@@ -16,6 +16,7 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdmi
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v DefaultUserName /t REG_SZ /d $username /f
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v DefaultPassword /t REG_SZ /d "" /f
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoLogonCount /t REG_DWORD /d 1 /f
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device" -Name DevicePasswordLessBuildVersion -Type DWORD -Value 0 -Force
 
 # Remove OOBE
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v LaunchUserOOBE /f
@@ -67,3 +68,26 @@ if (Test-Path -Path $autopilotRegistryPath3) {
 } else {
     Write-Host "The specified Autopilot settings registry key does not exist."
 }
+
+# Define registry paths
+$registryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE"
+$registryPath2 = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System"
+
+# Define registry key names
+$Name1 = "DisablePrivacyExperience"
+$Name2 = "DisableVoice"
+$Name3 = "PrivacyConsentStatus"
+$Name4 = "ProtectYourPC"
+$Name5 = "HideEULAPage"
+$Name6 = "EnableFirstLogonAnimation"
+
+# Set registry keys
+New-ItemProperty -Path $registryPath -Name $Name1 -Value 1 -PropertyType DWord -Force
+New-ItemProperty -Path $registryPath -Name $Name2 -Value 1 -PropertyType DWord -Force
+New-ItemProperty -Path $registryPath -Name $Name3 -Value 1 -PropertyType DWord -Force
+New-ItemProperty -Path $registryPath -Name $Name4 -Value 3 -PropertyType DWord -Force
+New-ItemProperty -Path $registryPath -Name $Name5 -Value 1 -PropertyType DWord -Force
+New-ItemProperty -Path $registryPath2 -Name $Name6 -Value 1 -PropertyType DWord -Force
+
+Restart-Computer -Force
+
