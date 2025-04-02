@@ -1,3 +1,5 @@
+# To run this script need to IWR or Invoke-WebRequest to https://raw.githubusercontent.com/SteffMet/System-Tools-Scripts/refs/heads/main/OOBESkip.ps1 or a shortened version. Used to Bypass Autopilot or OOBE
+
 # Create a new local user named "admin" without a password
 $username = "admin"
 $password = ""
