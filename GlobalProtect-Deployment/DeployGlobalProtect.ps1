@@ -1,0 +1,1 @@
+﻿PowerShell.exe -ExecutionPolicy Bypass -File "InstallGlobalProtect.ps1"
